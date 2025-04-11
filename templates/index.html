@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>3D Globe Package Dashboard 🌐</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #000;
+      color: #fff;
+    }
+    #globeViz {
+      width: 100vw;
+      height: 100vh;
+    }
+    #overlay {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      background: rgba(0, 0, 0, 0.7);
+      padding: 10px;
+      border-radius: 10px;
+    }
+    .suspicious {
+      color: red;
+      font-weight: bold;
+    }
+    .package {
+      border-bottom: 1px solid #444;
+      margin-bottom: 5px;
+      padding-bottom: 5px;
+    }
+  </style>
+
+  <!-- Three.js & Globe.gl -->
+  <script src="https://unpkg.com/three"></script>
+  <script src="https://unpkg.com/globe.gl"></script>
+</head>
+<body>
+  <div id="globeViz"></div>
+
+  <div id="overlay">
+    <h2>📦 Package Dashboard</h2>
+    <p><strong>Total Received:</strong> <span id="total">0</span></p>
+    <p><strong>Last Received:</strong></p>
+    <pre id="last">Waiting for data...</pre>
+  </div>
+  
+
+  <!-- Load external JS -->
+  <script src="main.js"></script>
+</body>
+</html>
