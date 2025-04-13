@@ -23,13 +23,18 @@ async function fetchPackages() {
     const data = await res.json();
     console.log('API Response:', data);
 
+
+
     // Update dashboard
     if (document.getElementById('total')) {
       document.getElementById('total').textContent = data.total_received;
     }
-    if (document.getElementById('last')) {
-      document.getElementById('last').textContent = JSON.stringify(data.last_received, null, 2);
+    if (document.getElementById('suspicious')) {
+      document.getElementById('suspicious').textContent = data.total_suspicious;
     }
+    if (document.getElementById('last')) {
+      const { city, country, ...sanitizedLast } = data.last_received || {};
+      document.getElementById('last').textContent = JSON.stringify(sanitizedLast, null, 2);    }
 
     // Process new points
     const newPoints = data.all_packages
@@ -67,6 +72,19 @@ async function fetchPackages() {
     } else if (newPoints.length > 0) {
       // Only update if we added new points but didn't remove any
       globe.pointsData(currentPoints);
+    }
+    
+    
+    // Top countries
+    if (document.getElementById('top-countries')) {
+      const topList = document.getElementById('top-countries');
+      topList.innerHTML = ''; // Clear previous list
+    
+      data.top_countries.forEach(([country, count]) => {
+        const li = document.createElement('li');
+        li.textContent = `${country}: ${count}`;
+        topList.appendChild(li);
+      });
     }
 
   } catch (err) {

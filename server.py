@@ -5,6 +5,8 @@ import threading
 import time
 import requests
 import os
+from collections import Counter
+
 
 app = Flask(__name__, static_folder='static', template_folder='templates')
 CORS(app)
@@ -29,6 +31,7 @@ def geolocate_ip(ip):
                 'lat': data.get('lat'),
                 'lon': data.get('lon')
             }
+    
     except Exception as e:
         print(f"[!] Geolocation error for {ip}: {e}")
     return {}
@@ -41,21 +44,27 @@ def receive_package():
     package['server_received_at'] = datetime.now().isoformat()
 
     # Normalize coordinate fields: remove existing lat/lon or latitude/longitude conflicts
-    for key in ['lat', 'lon' ]:
+    for key in ['lat', 'lon']:
         package.pop(key, None)
     for key in ['human_readable_time']:
-        package.pop(key,None)
+        package.pop(key, None)
 
-    # Geolocate IP if IP exists
+    # 🌍 Geolocate IP if IP exists
     ip = package.get('ip')
     if ip:
         location = geolocate_ip(ip)
-        # Add lat/lon and location info
+        if location:
+            package.update({
+                'latitude': location.get('lat'),
+                'longitude': location.get('lon'),
+                'city': location.get('city'),
+                'country': location.get('country')
+            })
 
-    # Store
+    # 💾 Store the package
     received_packages.append(package)
 
-    # Mark suspicious
+    # 🚩 Track suspicious ones separately
     if package.get('suspicious', 0) == 1:
         suspicious_packages.append(package)
 
@@ -63,15 +72,22 @@ def receive_package():
     return jsonify({'status': 'success'}), 200
 
 
+
 @app.route('/api/packages', methods=['GET'])
 def get_packages():
     """Endpoint for frontend to retrieve packages"""
+    # Count top 5 countries
+    country_list = [pkg.get('country') for pkg in received_packages if pkg.get('country')]
+    country_counter = Counter(country_list)
+    top_countries = country_counter.most_common(5)
+
     return jsonify({
         'all_packages': received_packages,
         'suspicious_packages': suspicious_packages,
         'total_received': len(received_packages),
+        'total_suspicious': len(suspicious_packages),
+        'top_countries': top_countries,
         'last_received': received_packages[-1] if received_packages else None
     })
-
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
