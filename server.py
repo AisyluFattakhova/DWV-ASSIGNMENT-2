@@ -1,15 +1,21 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template
 from flask_cors import CORS  # <-- add this
 from datetime import datetime
 import threading
 import time
 import requests
+import os
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='static', template_folder='templates')
 CORS(app)
 # In-memory storage for packages
 received_packages = []
 suspicious_packages = []
+app.template_folder = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'templates')
+@app.route('/')  # Add this route
+def index():
+    """Serve the main visualization page"""
+    return render_template('index.html')
 
 def geolocate_ip(ip):
     """Get latitude/longitude and location info from IP"""
@@ -67,16 +73,5 @@ def get_packages():
         'last_received': received_packages[-1] if received_packages else None
     })
 
-def start_server():
-    """Run the Flask server"""
-    app.run(host='0.0.0.0', port=5000, debug=True, use_reloader=False)
-
 if __name__ == '__main__':
-    # Start server in a separate thread
-    server_thread = threading.Thread(target=start_server)
-    server_thread.daemon = True
-    server_thread.start()
-    
-    # Keep main thread alive
-    while True:
-        time.sleep(1)
+    app.run(host='0.0.0.0', port=5000)
