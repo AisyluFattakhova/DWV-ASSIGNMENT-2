@@ -40,7 +40,7 @@ def send_packages(csv_file):
             # Send package
             try:
                 response = requests.post(
-                    'http://localhost:5000/api/packages',
+                    'http://flask-app:5000/api/packages',
                     json=package,
                     headers={'Content-Type': 'application/json'}
                 )

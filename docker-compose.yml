@@ -1,0 +1,20 @@
+services:
+  flask-app:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./server:/app
+    depends_on:
+      - sender
+
+  sender:
+    build:
+      context: ./sender
+      dockerfile: Dockerfile
+    volumes:
+      - ./sender:/app
+      - ./ip_addresses.csv:/app/ip_addresses.csv  # Mount the CSV file into the container
+    command: ["python", "data_generation.py"]
