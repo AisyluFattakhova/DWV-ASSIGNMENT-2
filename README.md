@@ -2,8 +2,8 @@
 ## How to Run the Project
 First, clone the repo:
 ```
-git clone https://github.com/your-username/your-repository.git
-cd your-repository
+git clone https://github.com/AisyluFattakhova/dwv-assignment-2.git
+cd dwv-assignment-2
 ```
 And then run:
 ```
