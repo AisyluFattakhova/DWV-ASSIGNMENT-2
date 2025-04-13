@@ -46,11 +46,20 @@
     <p><strong>Suspicious:</strong> <span id="suspicious">0</span></p>
     <p><strong>Last Received:</strong></p>
     <pre id="last">Waiting for data...</pre>
-   
+
     <h4>🌍 Top 5 Locations:</h4>
     <ul id="top-countries" style="list-style: none; padding-left: 0;"></ul>
   </div>
-  
+  <div id="popup" style="display:none; position:absolute; top:20px; right:20px; background:rgba(0,0,0,0.85); color:white; padding:15px; border-radius:10px; max-width:300px; z-index:1000; box-shadow: 0 0 10px rgba(255,255,255,0.3);">
+    <h3 style="margin-top:0;">📍 Point Info</h3>
+    <p><strong>Country:</strong> <span id="popup-country"></span></p>
+    <p><strong>IP:</strong> <span id="popup-ip"></span></p>
+    <p><strong>Latitude:</strong> <span id="popup-lat"></span></p>
+    <p><strong>Longitude:</strong> <span id="popup-lng"></span></p>
+    <p><strong>Suspicious:</strong> <span id="popup-suspicious"></span></p>
+
+    <button onclick="document.getElementById('popup').style.display='none'" style="margin-top:10px;">Close</button>
+  </div>
 
   <!-- Load external JS -->
   <script src="static/main.js"></script>

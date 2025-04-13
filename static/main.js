@@ -9,6 +9,21 @@ const globe = Globe()(document.getElementById('globeViz'))
     <b>IP:</b> ${d.ip}<br>
     <b>Location:</b> ${d.lat.toFixed(2)}°, ${d.lng.toFixed(2)}°
   `);
+  globe.onPointClick(point => {
+    // Zoom to the point
+    globe.pointOfView({ lat: point.lat, lng: point.lng, altitude: 1.5 }, 1000);
+  
+    // Fill popup with data
+    document.getElementById('popup-ip').textContent = point.ip;
+    document.getElementById('popup-lat').textContent = point.lat.toFixed(2);
+    document.getElementById('popup-lng').textContent = point.lng.toFixed(2);
+    document.getElementById('popup-suspicious').textContent = point.suspicious === 1 ? 'Yes 🚨' : 'No ✅';
+    document.getElementById('popup-country').textContent = point.country || 'Unknown';
+  
+    // Show popup
+    document.getElementById('popup').style.display = 'block';
+  });
+  
 
 // 🔁 Track points with unique IDs to prevent duplicates
 let currentPoints = []; // Changed from const to let
@@ -50,6 +65,7 @@ async function fetchPackages() {
           lat: parseFloat(pkg.latitude),
           lng: parseFloat(pkg.longitude),
           ip: pkg.ip,
+          country: pkg.country,
           suspicious: pkg.suspicious || 0,
           timestamp: Date.now()
         };
